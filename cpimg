@@ -1,0 +1,21 @@
+#! /bin/bash
+
+if [ $# -lt 3 ]; then
+  echo "Usage: $0 ide_image slice disk_image"
+  exit 1
+fi
+
+ide=$1
+slice=$2
+disk=$3
+
+if [ ! -f "$1" ]; then
+	echo "Cannot access ide image"
+	exit 1
+fi
+if [ ! -f "$3" ]; then
+	echo "Cannot access disk image"
+	exit 1
+fi
+
+dd bs=1024 if="$disk" of="$ide" conv=notrunc seek=$((1024*8*$slice + 1024 + 1))

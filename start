@@ -1,3 +1,15 @@
 #!/bin/sh
 
-exec rc2014 -s -r /rom/RCZ80_std.rom -i /disk/hd1k_combo.img -b
+IDE=/disk/disk.ide
+
+# 1 = 504MB IDE disk
+# 5 = 128MB IDE disk
+makedisk 5 $IDE
+
+# Disk partition table
+dd bs=1024 if=/disk/hd1k_prefix.dat of=$IDE conv=notrunc seek=1
+# Disk image
+SLICE=0
+dd bs=1024 if=/disk/hd1k_combo.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
+
+exec rc2014 -s -w -R -b -r /rom/RCZ80_std.rom -i /disk/disk.ide

@@ -1,5 +1,4 @@
-
-FROM alpine as build
+FROM alpine as emulator
 WORKDIR /
 RUN <<EOF
 apk add gcc musl-dev make git
@@ -11,18 +10,16 @@ EOF
 FROM alpine as rom
 ARG ROMWBW_VER=3.4.0
 WORKDIR /
+ADD https://github.com/wwarthen/RomWBW/releases/download/v${ROMWBW_VER}/RomWBW-v${ROMWBW_VER}-Package.zip /romwbw.zip
 RUN <<EOF
-apk add wget unzip
-wget https://github.com/wwarthen/RomWBW/releases/download/v${ROMWBW_VER}/RomWBW-v${ROMWBW_VER}-Package.zip
-mkdir RomWBW
-cd RomWBW
-unzip ../RomWBW-v${ROMWBW_VER}-Package.zip
+apk add unzip
+unzip romwbw.zip Binary/hd1k_* Binary/*.rom -d romwbw
 EOF
 
 FROM alpine
-COPY --from=build /EmulatorKit/rc2014 /EmulatorKit/makedisk /usr/bin/
-COPY --from=rom /RomWBW/Binary/RCZ80_std.rom /rom/
-COPY --from=rom /RomWBW/Binary/hd1k_combo.img /disk/
-COPY start /start
+COPY --from=emulator /EmulatorKit/rc2014 /EmulatorKit/makedisk /usr/bin/
+COPY --from=rom /romwbw/Binary/RCZ80_std.rom /rom/
+COPY --from=rom /romwbw/Binary/hd1k_prefix.dat /romwbw/Binary/hd1k_combo.img /disk/
+COPY ./start ./cpimg /
 
 ENTRYPOINT [ "/start" ]
