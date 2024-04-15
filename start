@@ -2,14 +2,19 @@
 
 IDE=/disk/disk.ide
 
-# 1 = 504MB IDE disk
-# 5 = 128MB IDE disk
-makedisk 5 $IDE
+if [ ! -e $IDE ]; then
+    # 1 = 504MB IDE disk
+    # 5 = 128MB IDE disk
+    makedisk 5 $IDE
 
+    dd bs=1024 if=/disk/hd1k_combo.img of=$IDE conv=notrunc seek=1
+fi
+
+# If building our own dive image, we'll need to use these commands instead
 # Disk partition table
-dd bs=1024 if=/disk/hd1k_prefix.dat of=$IDE conv=notrunc seek=1
+#dd bs=1024 if=/disk/hd1k_prefix.dat of=$IDE conv=notrunc seek=1
 # Disk image
-SLICE=0
-dd bs=1024 if=/disk/hd1k_combo.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
+#SLICE=0
+#dd bs=1024 if=/disk/hd1k_combo.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
 
-exec rc2014 -s -w -R -b -r /rom/RCZ80_std.rom -i /disk/disk.ide
+exec rc2014 -a -w -R -b -r /rom/RCZ80_std.rom -i /disk/disk.ide
