@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec rc2014 -s -r /rom/RCZ80_std.rom -i /disk/hd1k_combo.img -b
