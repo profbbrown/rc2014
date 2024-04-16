@@ -14,6 +14,7 @@ ADD https://github.com/wwarthen/RomWBW/releases/download/v${ROMWBW_VER}/RomWBW-v
 RUN <<EOF
 apk add unzip
 unzip romwbw.zip Binary/hd1k_* Binary/*.rom -d romwbw
+rm -f RomWBW-v${ROMWBW_VER}-Package.zip
 EOF
 
 FROM alpine
@@ -25,5 +26,6 @@ COPY --from=rom /romwbw/Binary/hd1k_prefix.dat \
                 /romwbw/Binary/hd1k_games.img \
                 /romwbw/Binary/hd1k_aztecc.img \
                 /disk/
+COPY ./start /start
 
 ENTRYPOINT [ "/start" ]
