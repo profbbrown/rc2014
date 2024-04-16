@@ -9,21 +9,26 @@ if [ ! -e $IDE ]; then
 
     #dd bs=1024 if=/disk/hd1k_combo.img of=$IDE conv=notrunc seek=1
 
-    # If building our own dive image, we'll need to use these commands instead
+    # If building our own drive image, we'll need to use these commands instead.
+    # The emulator's IDE disk has:
+    #   1 KB header (initialized by makedisk)
+    #   1 MB partition table
+    #   8 MB slices
+
     # Disk partition table
     dd bs=1024 if=/disk/hd1k_prefix.dat of=$IDE conv=notrunc seek=1
     # ZSDOS
     SLICE=0
-    dd bs=1024 if=/disk/hd1k_zsdos.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
+    dd bs=1024 if=/disk/hd1k_zsdos.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
     # Turbo Pascal
     SLICE=1
-    dd bs=1024 if=/disk/hd1k_tpascal.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
+    dd bs=1024 if=/disk/hd1k_tpascal.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
     # Games
     SLICE=2
-    dd bs=1024 if=/disk/hd1k_games.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
-    # Games
+    dd bs=1024 if=/disk/hd1k_games.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
+    # Aztec C
     SLICE=3
-    dd bs=1024 if=/disk/hd1k_aztecc.img of=$IDE conv=notrunc seek=$((1024*8*$SLICE + 1024 + 1))
+    dd bs=1024 if=/disk/hd1k_aztecc.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
 fi
 
 exec rc2014 -a -w -R -b -r /rom/RCZ80_std.rom -i /disk/disk.ide
