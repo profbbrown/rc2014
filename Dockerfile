@@ -19,7 +19,11 @@ EOF
 FROM alpine
 COPY --from=emulator /EmulatorKit/rc2014 /EmulatorKit/makedisk /usr/bin/
 COPY --from=rom /romwbw/Binary/RCZ80_std.rom /rom/
-COPY --from=rom /romwbw/Binary/hd1k_prefix.dat /romwbw/Binary/hd1k_combo.img /disk/
-COPY ./start ./cpimg /
+COPY --from=rom /romwbw/Binary/hd1k_prefix.dat \
+                /romwbw/Binary/hd1k_zsdos.img \
+                /romwbw/Binary/hd1k_tpascal.img \
+                /romwbw/Binary/hd1k_games.img \
+                /romwbw/Binary/hd1k_aztecc.img \
+                /disk/
 
 ENTRYPOINT [ "/start" ]
