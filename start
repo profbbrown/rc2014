@@ -16,19 +16,14 @@ if [ ! -e $IDE ]; then
     #   8 MB slices
 
     # Disk partition table
-    dd bs=1024 if=/disk/hd1k_prefix.dat of=$IDE conv=notrunc seek=1
-    # ZSDOS
+    zcat /disk/hd1k_prefix.dat.gz | dd bs=1024 of=$IDE conv=notrunc seek=1
+
+    # Slices
     SLICE=0
-    dd bs=1024 if=/disk/hd1k_zsdos.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
-    # Turbo Pascal
-    SLICE=1
-    dd bs=1024 if=/disk/hd1k_tpascal.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
-    # Games
-    SLICE=2
-    dd bs=1024 if=/disk/hd1k_games.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
-    # Aztec C
-    SLICE=3
-    dd bs=1024 if=/disk/hd1k_aztecc.img of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
+    for IMG in zsdos tpascal games aztecc; do
+        zcat /disk/hd1k_$IMG.img.gz | dd bs=1024 of=$IDE conv=notrunc seek=$((1 + 1024 + 8192*$SLICE))
+        SLICE=$((SLICE+1))
+    done
 fi
 
 exec rc2014 -a -w -R -b -r /rom/RCZ80_std.rom -i /disk/disk.ide
