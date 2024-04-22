@@ -10,11 +10,19 @@ It was also a way for me to learn about Docker multi-stage builds.
 
 # Usage
 
+Build the Docker image:
+
+```
+docker build . --tag rc2014
+```
+
+Running the container will drop you into the RomWBW monitor.
+
 ```
 docker run -it rc2014
 ```
 
-By default, the emulator will boot up with a 128MB virtual IDE disk with the following slices:
+By default, the emulator will boot up with a 128MB virtual IDE disk mounted as unit 2 with the following slices:
 
 | Slice | Description |
 ----|---------
@@ -22,6 +30,8 @@ By default, the emulator will boot up with a 128MB virtual IDE disk with the fol
 | 1 | Turbo Pascal |
 | 2 | Games |
 | 3 | Aztec C |
+
+To boot the OS, type the command `2.0` into the monitor. This will boot unit 2, slice 0 (ZSDOS).
 
 The virtual disk is emphemeral. You can mount an alternative directory under `/disk`
 and the emualtor will create the virtual disk there as `disk.ide`.
